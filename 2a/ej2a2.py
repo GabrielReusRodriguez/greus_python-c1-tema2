@@ -47,7 +47,30 @@ class ProductAPIHandler(BaseHTTPRequestHandler):
         # 3. Busca el producto en la lista
         # 4. Si el producto existe, devuélvelo en formato JSON con código 200
         # 5. Si el producto no existe, devuelve un mensaje de error con código 404
-        pass
+        #pass
+        # PAra las expresiones regulares uso el paquete re y la funcion match.
+        # El primer argumento es la expresion regular y se lo debemos indicar con r, el numero es \d y + indica 1..n apariciones.
+        #pattern = r"/product/\\d+"
+        pattern = r"/product/\d+"
+        #print(f"Recibido eS: {self.path} y el match: {re.match(pattern,self.path)}")
+        if re.fullmatch(pattern,self.path) is not None:
+            # Obtenemos el id del item reemplazando /product por "" . Esto lo podemos hacer con re.sub
+            #  sub nos devuelve un string, hacemos cast a int para el comparador del if.
+            id = int(re.sub(r"/product/","", self.path))
+            # Buscamos el item.
+            for product in products:
+                if product['id'] == id:
+                    resp_json = json.dumps(product)
+                    self.send_response(200)
+                    self.send_header('Content-Type','application/json')
+                    self.end_headers()
+                    self.wfile.write(resp_json.encode('utf-8'))
+                    return
+            # En caso que no encontremos un id, que se ejecute el trozo de codigo 404 (reaprovechamos codigo) 
+        self.send_response(404)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
 
 def create_server(host="localhost", port=8000):
     """
