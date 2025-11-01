@@ -39,7 +39,9 @@ def create_app():
         """
         # Implementa este endpoint para obtener los parámetros de consulta
         # y devolverlos en formato JSON
-        pass
+        #pass
+        # Obtenemos los parametros de la url con request.args que es un diccionario que nos llena flask.
+        return jsonify(request.args)
 
     @app.route('/form', methods=['POST'])
     def form_handler():
@@ -50,7 +52,9 @@ def create_app():
         """
         # Implementa este endpoint para obtener los datos del formulario
         # y devolverlos en formato JSON
-        pass
+        #pass
+        # Los datos de un formulario vienen en request.form
+        return jsonify(request.form)
 
     @app.route('/json', methods=['POST'])
     def json_handler():
@@ -61,7 +65,8 @@ def create_app():
         """
         # Implementa este endpoint para obtener los datos JSON
         # y devolverlos en formato JSON
-        pass
+        #pass
+        return jsonify(request.get_json())
 
     return app
 
