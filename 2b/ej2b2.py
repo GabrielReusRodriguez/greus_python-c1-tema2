@@ -21,7 +21,10 @@ def create_app():
     app = Flask(__name__)
 
     # Aquí debes implementar los endpoints solicitados
-
+    # Como el ejercicio 1 , utilizo el add_url__rule con funciones lambdas.abs
+    app.add_url_rule('/hello', '/hello', lambda: "¡Hola mundo!")
+    app.add_url_rule('/goodbye', '/goodbye', lambda: "¡Adiós mundo!")
+    app.add_url_rule('/greet/<nombre>', '/greet/', lambda nombre: '¡Hola, ' + nombre + '!')
     return app
 
 if __name__ == '__main__':
