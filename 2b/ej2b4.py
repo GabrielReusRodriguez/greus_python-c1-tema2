@@ -14,9 +14,18 @@ Nota: Asegúrate de incluir una estructura HTML válida en la plantilla.
 from flask import Flask, render_template_string
 
 # Implementa la plantilla HTML aquí
+# Las variables van en doble {{}}
+#<!doctype html>
+
 TEMPLATE = """
 <!doctype html>
-...
+<html>
+<head>
+ <title>¡Hola, {{ nombre }}!</title>
+</head>
+<body>
+<h1>¡Hola, {{ nombre }}!</h1>
+</body>
 </html>
 """
 
@@ -32,11 +41,23 @@ def create_app():
         Devuelve una página web que saluda al usuario utilizando una plantilla Jinja2
         """
         # Utiliza render_template_string para renderizar la plantilla con el nombre proporcionado:
-
-        pass
+        # render_:template_string de flask utiliza jinja2., le tenemos que pasar las variables...
+        return render_template_string(source= TEMPLATE, nombre =  nombre)
+        #pass
 
     return app
 
+from jinja2 import Template,meta
+from jinja2 import Environment, meta
+from jinja2.nodes import Name
+
 if __name__ == '__main__':
+    
+    template = Template(TEMPLATE)
+
+    env = Environment()
+    parsed_content = env.parse(TEMPLATE)
+    print("undeclared=", meta.find_undeclared_variables(parsed_content))
+
     app = create_app()
     app.run(debug=True)
