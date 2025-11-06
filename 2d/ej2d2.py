@@ -25,7 +25,6 @@ from flask import Flask, request, abort, jsonify
 from werkzeug.routing.converters import IntegerConverter
 
 class SignedIntConverter(IntegerConverter):
-    #regex = r'-?[0-9]+'
     regex = r'-?\d+'
 
 
