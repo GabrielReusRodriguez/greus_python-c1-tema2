@@ -64,7 +64,9 @@ def create_app():
         # Implementa este manejador de errores
         # 1. Registra el error usando app.logger.warning() con un mensaje descriptivo
         # 2. Devuelve un JSON con un mensaje descriptivo y el código de estado 400
-        pass
+        #pass
+        app.logger.warning(str(error))
+        return jsonify({'error': str(error)}), 400
 
     # Manejador de errores 404 - Not Found
     @app.errorhandler(404)
@@ -76,7 +78,9 @@ def create_app():
         # Implementa este manejador de errores
         # 1. Registra el error usando app.logger.info() con un mensaje descriptivo
         # 2. Devuelve un JSON con un mensaje descriptivo y el código de estado 404
-        pass
+        #pass
+        app.logger.info(str(error))
+        return jsonify({'error': str(error)}), 404
 
     # Manejador de errores 405 - Method Not Allowed
     @app.errorhandler(405)
@@ -88,7 +92,9 @@ def create_app():
         # Implementa este manejador de errores
         # 1. Registra el error usando app.logger.warning() con un mensaje descriptivo
         # 2. Devuelve un JSON con un mensaje descriptivo y el código de estado 405
-        pass
+        #pass
+        app.logger.warning(str(error))
+        return jsonify({'error': str(error)}), 405
 
     # Manejador de errores 500 - Internal Server Error
     @app.errorhandler(500)
@@ -101,7 +107,10 @@ def create_app():
         # 1. Registra el error usando app.logger.error() con los detalles del error
         # 2. Incluye información adicional como la ruta que causó el error utilizando request.path
         # 3. Devuelve un JSON con un mensaje descriptivo y el código de estado 500
-        pass
+        #pass
+        app.logger.error(str(error))
+        app.logger.error(f'Path: {request.path}')
+        return jsonify({'error': str(error)}), 500
 
     @app.route('/animals', methods=['GET'])
     def get_animals():
@@ -109,7 +118,8 @@ def create_app():
         Devuelve la lista completa de animales
         """
         # Implementa este endpoint para devolver la lista de animales
-        pass
+        #pass
+        return jsonify(animals), 200            
 
     @app.route('/animals/<int:animal_id>', methods=['GET'])
     def get_animal(animal_id):
@@ -135,7 +145,21 @@ def create_app():
         # 2. Verifica que los campos "name" y "species" estén presentes
         # 3. Si falta algún campo, usa abort(400) para lanzar un error
         # 4. Si todo está correcto, agrega el nuevo animal a la lista y devuelve una respuesta adecuada (código 201)
-        pass
+        #pass
+        # indico que next_id es global
+        global next_id
+        data = request.get_json()
+        if data is None:
+            abort(400)
+        if data.get('name') is None or data.get('species') is None:
+            abort(400)
+        animal = {}
+        animal['id'] = next_id
+        animal['name'] = data.get('name')
+        animal['species'] = data.get('species')
+        animals.append(animal)
+        next_id = next_id + 1
+        return jsonify(animal), 201, {'Context-Type': 'application/json'}
 
     @app.route('/animals/<int:animal_id>', methods=['DELETE'])
     def delete_animal(animal_id):
@@ -147,7 +171,13 @@ def create_app():
         # 1. Verifica si el animal existe
         # 2. Si no existe, usa abort(404) para lanzar un error 404
         # 3. Si existe, elimínalo de la lista y devuelve una respuesta adecuada
-        pass
+        #pass
+        animal = next((a for a in animals if a.get('id') == animal_id), None)
+        if animal is None:
+            abort(404)
+        # pasamos a borrarlo.
+        animals.remove(animal)
+        return jsonify(''), 204, {'Context-Tyoe': 'application/json'}
 
     # Endpoint adicional que lanza un error 500 para probar el manejador
     @app.route('/test-error', methods=['GET'])
