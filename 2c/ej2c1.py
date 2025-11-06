@@ -52,11 +52,18 @@ def create_app():
         """
         # Implementa este endpoint
         #pass
+        # En vez del  bucle clasico, usamos next que es mas eficiente.
+        product_found = next((product for product in products if product["id"] == product_id ), None)
+        if product_found is None:
+            return jsonify({'error': 'El producto con id ' + str(product_id) + ' NO existe'}), 404
+        else:
+            return jsonify(product_found)
+        """
         for product in products:
             if product["id"] == product_id:
                 return jsonify(product)
         return jsonify({'error': 'El producto con id ' + str(product_id) + ' NO existe'}), 404
-
+        """
 
     return app
 

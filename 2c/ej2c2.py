@@ -46,7 +46,8 @@ def create_app():
         Devuelve la lista completa de tareas
         """
         # Implementa este endpoint
-        pass
+        #pass
+        return jsonify(tasks), 200
 
     @app.route('/tasks', methods=['POST'])
     def add_task():
@@ -55,7 +56,14 @@ def create_app():
         El cuerpo de la solicitud debe incluir un JSON con el campo "name"
         """
         # Implementa este endpoint
-        pass
+        #pass
+        datos = request.json
+        # Tengo que decirle al interprete python donde encontrart la variable global ya que si no da un error.
+        global next_id
+        task = { 'id' : next_id, 'name' : datos.get('name')}
+        tasks.append(task)
+        next_id = next_id + 1
+        return jsonify(task), 201
 
     @app.route('/tasks/<int:task_id>', methods=['DELETE'])
     def delete_task(task_id):
@@ -63,7 +71,19 @@ def create_app():
         Elimina una tarea específica por su ID
         """
         # Implementa este endpoint
-        pass
+        #pass
+        new_task_list = []
+        deleted = False
+        for task in tasks:
+            if task['id'] == task_id:
+                deleted = True
+            else:
+                new_task_list.append(task)                
+        if deleted:
+            task = new_task_list
+            return jsonify({'message': 'Task deleted'}), 200
+        return jsonify({'error': 'Task not found'}), 404
+
 
     @app.route('/tasks/<int:task_id>', methods=['PUT'])
     def update_task(task_id):
@@ -73,7 +93,28 @@ def create_app():
         Código de estado: 200 - OK si se actualizó, 404 - Not Found si no existe
         """
         # Implementa este endpoint
-        pass
+        #pass
+        """
+        data = request.json
+        if 'name' not in data.keys():
+            return jsonify({'error': 'The payload does NOT have name'}), 405
+        for task in tasks:
+            if task['id'] == task_id:
+                task['name'] = data.get('name')
+                return jsonify(task), 200
+        return jsonify({'error': 'Task not found'}), 404
+        """
+        # Lo hago con next que es mas eficiente
+        task = next((t for t in tasks if t.get('id') == task_id), None)
+        if task is None:
+            return jsonify({'error': 'Task not found'}), 404
+        datos = request.json
+        if not datos or datos.get('name',None) is None:
+            return jsonify({'error': 'No data found'}), 400
+        #task.clear()
+        task['name'] = datos['name']
+        #task.update(datos)
+        return jsonify(task), 200
 
     return app
 

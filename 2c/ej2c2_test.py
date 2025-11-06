@@ -1,6 +1,7 @@
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
+#from ej2c2 import create_app
 from ej2c2 import create_app
 
 @pytest.fixture
