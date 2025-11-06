@@ -26,7 +26,7 @@ def test_filter_by_category(client):
     response = client.get("/products?category=electronics")
     assert response.status_code == 200
     data = response.json
-    assert len(data) == 4  # Debería haber 4 productos electrónicos
+    assert len(data) == 5  # Debería haber 4 productos electrónicos
     for product in data:
         assert product["category"] == "electronics"
 

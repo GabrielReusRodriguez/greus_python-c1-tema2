@@ -64,8 +64,27 @@ def create_app():
         # 1. Obtén los parámetros de consulta usando request.args
         # 2. Filtra la lista de productos según los parámetros proporcionados
         # 3. Devuelve la lista filtrada en formato JSON con código 200
-        pass
+        #pass
+        params = request.args
+        lista_filtrada = []
+        for product in products:
+            if params.get('category') is not None:
+                if product['category'] != params.get('category'):
+                    continue
+            if params.get('min_price') is not None:
+                if product['price'] < float(params.get('min_price')):
+                    continue
+            if params.get('max_price') is not None:
+                # viene como texto pero es un numero... asi que hago cast a float
+                if product['price'] > float(params.get('max_price')):
+                    continue
+            if params.get('name') is not None:
+                if params.get('name') not in product['name']:
+                    continue
+            lista_filtrada.append(product)
+        return jsonify(lista_filtrada), 200
 
+ 
     return app
 
 if __name__ == '__main__':
