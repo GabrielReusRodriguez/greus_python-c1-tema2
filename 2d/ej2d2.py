@@ -22,6 +22,12 @@ situaciones de error comunes en aplicaciones web.
 """
 
 from flask import Flask, request, abort, jsonify
+from werkzeug.routing.converters import IntegerConverter
+
+class SignedIntConverter(IntegerConverter):
+    #regex = r'-?[0-9]+'
+    regex = r'-?\d+'
+
 
 def create_app():
     """
@@ -29,7 +35,10 @@ def create_app():
     """
     app = Flask(__name__)
 
-    @app.route('/resource/<int:resource_id>', methods=['GET'])
+    app.url_map.converters['signed_int'] = SignedIntConverter
+
+#    @app.route('/resource/<int:resource_id>', methods=['GET'])
+    @app.route('/resource/<signed_int:resource_id>', methods=['GET'])
     def get_resource(resource_id):
         """
         Devuelve información sobre un recurso según su ID.
@@ -38,7 +47,15 @@ def create_app():
         - Si el ID es > 100: abort con código 404 (Not Found)
         """
         # Implementa este endpoint utilizando abort() según las condiciones
-        pass
+        #pass
+
+        print(f"Id: {str(resource_id)}")
+        if resource_id <= 0:
+            abort(400)
+        if resource_id > 100:
+            abort(404)
+        # antes de enviar el id, he dde forzar el cast a string.
+        return str(resource_id), 200
 
     @app.route('/admin', methods=['GET'])
     def admin():
@@ -49,7 +66,13 @@ def create_app():
         - Si la clave no es 'secret123': abort con código 403 (Forbidden)
         """
         # Implementa este endpoint utilizando abort() según las condiciones
-        pass
+        #pass
+        params = request.args
+        if params.get('key') is None:
+            abort(401)
+        if params.get('key') != 'secret123':
+            abort(403)
+        return jsonify(""), 200
 
     return app
 
