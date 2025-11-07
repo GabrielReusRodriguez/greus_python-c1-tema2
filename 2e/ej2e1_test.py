@@ -29,6 +29,7 @@ def test_headers_endpoint(client):
 
     # Verifica que los encabezados enviados estén presentes en la respuesta
     response_data = response.get_json()
+    print(f"TESSST: {response_data}")
     assert 'X-Test-Header' in response_data, "El encabezado personalizado debe estar en la respuesta"
     assert response_data['X-Test-Header'] == 'test-value', "El valor del encabezado debe ser correcto"
     assert 'User-Agent' in response_data, "El encabezado User-Agent debe estar en la respuesta"
@@ -100,8 +101,8 @@ def test_echo_endpoint_form(client):
     else:
         for key, value in form_data.items():
             assert key in response.data.decode(), "La clave debe estar en la respuesta"
-            assert value in response.data.decode(), "El valor debe estar en la respuesta"
-
+            assert value in response.data.decode('unicode_escape'), "El valor debe estar en la respuesta"
+            
 def test_echo_endpoint_plain_text(client):
     """
     Prueba el endpoint /echo con texto plano.
