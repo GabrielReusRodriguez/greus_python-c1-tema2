@@ -96,7 +96,7 @@ def create_app():
                 app.logger.error(msg)
             if params.get('level') == 'critical':
                 app.logger.critical(msg)
-        return 'Se ha registrado el msg', 200, { 'Context-Type': 'text/plain'}
+        return 'Se ha registrado el msg', 200, { 'Content-Type': 'text/plain'}
 
     return app
 
