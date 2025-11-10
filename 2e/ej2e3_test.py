@@ -42,12 +42,14 @@ def test_post_image(client):
     Test POST /image endpoint - should accept an image file and save it
     """
     # Create a test image using scipy.misc.face()
-    from scipy import misc
+    #from scipy import misc
+    from scipy import datasets
     import numpy as np
     from PIL import Image
 
     # Get the face image from scipy
-    face = misc.face()
+    #face = misc.face()
+    face = datasets.face()
 
     # Convert to bytes in PNG format
     img = Image.fromarray(face)

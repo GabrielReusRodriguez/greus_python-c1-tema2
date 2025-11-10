@@ -37,6 +37,9 @@ una habilidad esencial para desarrollar APIs web que interactúan con diversos c
 from flask import Flask, jsonify, request, Response
 import os
 
+
+num_img = 0
+
 def create_app():
     """
     Crea y configura la aplicación Flask
@@ -56,7 +59,13 @@ def create_app():
         # 1. Verifica que el Content-Type sea text/plain
         # 2. Lee el contenido de la solicitud usando request.data
         # 3. Devuelve el mismo texto con Content-Type text/plain
-        pass
+        #pass
+        if request.content_type == 'text/plain':
+            return request.data, 200, {'Content-Type' : 'text/plain'}
+        else:
+            return 'ERROR', 400, {'Content-Type' : 'text/plain'}
+
+
 
     @app.route('/html', methods=['POST'])
     def post_html():
@@ -67,7 +76,12 @@ def create_app():
         # 1. Verifica que el Content-Type sea text/html
         # 2. Lee el contenido de la solicitud
         # 3. Devuelve el mismo HTML con Content-Type text/html
-        pass
+        #pass
+        if request.content_type == 'text/html':
+            return request.data, 200, {'Content-Type' : 'text/html'}
+        else:
+            return '<html><head/><body>ERROR</body></html>', 400, {'Content-Type' : 'text/html'}
+
 
     @app.route('/json', methods=['POST'])
     def post_json():
@@ -77,7 +91,9 @@ def create_app():
         # Implementa este endpoint:
         # 1. Accede al contenido JSON usando request.get_json()
         # 2. Devuelve el mismo objeto JSON usando jsonify()
-        pass
+        #pass
+        _data = request.get_json()
+        return jsonify(_data), 200, {'Content-Type' : 'application/json'}
 
     @app.route('/xml', methods=['POST'])
     def post_xml():
@@ -88,7 +104,12 @@ def create_app():
         # 1. Verifica que el Content-Type sea application/xml
         # 2. Lee el contenido XML de la solicitud
         # 3. Devuelve el mismo XML con Content-Type application/xml
-        pass
+        #pass
+        if request.content_type == 'application/xml':
+            return request.data, 200, {'Content-Type' : 'application/xml'}
+        else:
+            return '<mensaje>ERROR</mensaje>', 400, {'Content-Type' : 'application/xml'}
+
 
     @app.route('/image', methods=['POST'])
     def post_image():
@@ -100,7 +121,25 @@ def create_app():
         # 2. Lee los datos binarios de la imagen
         # 3. Guarda la imagen en el directorio 'uploads' con un nombre único
         # 4. Devuelve una confirmación con el nombre del archivo guardado
-        pass
+        #pass
+        global num_img
+        if request.content_type == 'image/png' or request.content_type == 'image/jpeg':
+            _img_data = request.data
+            """ Si el directorio existe, hace un raise de FileExistsError ."""
+            try:
+                os.mkdir('./uploads/')
+            except FileExistsError  as e:
+                pass
+            file_name = 'img' + str(num_img)
+            file_path = f'./uploads/{file_name}'
+            with open(file_path, 'wb+') as f:
+                f.write(_img_data)
+            resp = {'mensaje': 'OK', 'archivo': file_path}
+            num_img  = num_img + 1
+            return  jsonify(resp), 200, {'Content-Type' : 'application/json'}
+        else:
+            return jsonify({'mensaje' : 'Error'}), 400, {'Content-Type' : 'application/json'}
+
 
     @app.route('/binary', methods=['POST'])
     def post_binary():
@@ -112,7 +151,12 @@ def create_app():
         # 2. Lee los datos binarios de la solicitud
         # 3. Guarda los datos en un archivo o simplemente verifica su tamaño
         # 4. Devuelve una confirmación con información sobre los datos recibidos
-        pass
+        #pass
+        if request.content_type == 'application/octet-stream':
+            _data = request.data
+            return jsonify({'mensaje': 'OK', 'tamaño' : len(_data)}), 200, {'Content-Type' : 'application/json'}
+        else:
+            return jsonify({'mensaje': 'Error'}), 400,{'Content-Type' : 'application/json'}
 
     return app
 
