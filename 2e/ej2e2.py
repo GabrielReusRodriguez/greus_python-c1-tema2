@@ -51,7 +51,8 @@ def create_app():
         Devuelve un texto plano con el tipo MIME `text/plain`
         """
         # Implementa este endpoint para devolver el contenido solicitado
-        pass
+        #pass
+        return "Este es un texto plano", 200, {'Content-Type': 'text/plain'}
 
     @app.route('/html', methods=['GET'])
     def get_html():
@@ -59,7 +60,8 @@ def create_app():
         Devuelve un fragmento HTML con el tipo MIME `text/html`
         """
         # Implementa este endpoint para devolver el contenido solicitado
-        pass
+        #pass
+        return '<h1>Este es un fragmento HTML</h1>', 200, {'Content-Type' : 'text/html'}
 
     @app.route('/json', methods=['GET'])
     def get_json():
@@ -67,7 +69,8 @@ def create_app():
         Devuelve un objeto JSON con el tipo MIME `application/json`
         """
         # Implementa este endpoint para devolver el contenido solicitado
-        pass
+        #pass
+        return jsonify({'mensaje': 'Este es un objeto JSON'}), 200, {'Content-Type': 'application/json'}
 
     @app.route('/xml', methods=['GET'])
     def get_xml():
@@ -75,7 +78,8 @@ def create_app():
         Devuelve un documento XML con el tipo MIME `application/xml`
         """
         # Implementa este endpoint para devolver el contenido solicitado
-        pass
+        #pass
+        return '<mensaje>Este es un documento XML</mensaje>', 200, {'Content-Type' : 'application/xml' }
 
     @app.route('/image', methods=['GET'])
     def get_image():
@@ -84,7 +88,9 @@ def create_app():
         """
         # Implementa este endpoint para devolver el contenido solicitado
         # Sugerencia: Puedes usar send_file para enviar una imagen
-        pass
+        #pass
+        #send_file('file route', mimetype= 'image/png')
+        return "", 200, {'Content-Type' : 'image/png'}
 
     @app.route('/binary', methods=['GET'])
     def get_binary():
@@ -94,7 +100,11 @@ def create_app():
         """
         # Implementa este endpoint para devolver el contenido solicitado
         # Sugerencia: Puedes usar os.urandom() para generar datos aleatorios
-        pass
+        #pass
+        _bytes = os.urandom(32)
+        # Hace falta el header Content-Disposition que indica si se envia como attachment o se ha de ver en el navegador.
+        return _bytes, 200, {'Content-Type' : 'application/octet-stream', 'Content-Disposition' : 'attachment'}
+
 
     return app
 
